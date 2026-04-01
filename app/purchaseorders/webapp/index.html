@@ -1,36 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase Order Management</title>
-
-    <script
-        src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
-        data-sap-ui-libs="sap.m,sap.ui.table,sap.ui.layout"
-        data-sap-ui-theme="sap_horizon"
-        data-sap-ui-bindingSyntax="complex"
-        data-sap-ui-compatVersion="edge"
-        data-sap-ui-async="true"
-        data-sap-ui-resourceroots='{
-            "aayush": "./"
-        }'>
-    </script>
-
-    <script>
-        sap.ui.require(
-            ["sap/ui/core/ComponentContainer"],
-            function (ComponentContainer) {
-                new ComponentContainer({
-                    name: "aayush",
-                    manifest: true,
-                    async: true
-                }).placeAt("content");
-            }
-        );
-    </script>
+	<meta charset="utf-8">
+	<title>Purchase Order</title>
+	<script
+		id="sap-ui-bootstrap"
+        src="https://sdk.openui5.org/resources/sap-ui-core.js"
+		data-sap-ui-theme="sap_horizon"
+		data-sap-ui-compat-version="edge"
+		data-sap-ui-async="true"
+        data-sap-ui-preload="off"
+		data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
+		data-sap-ui-resource-roots='{
+			"aayush": "./"
+		}'>
+	</script>
 </head>
-<body class="sapUiBody">
-    <div id="content"></div>
+<body class="sapUiBody" id="content">
+	<div data-sap-ui-component 
+         data-name="aayush" 
+         data-id="container"
+         data-settings='{"id" : "aayush"}'></div>
 </body>
 </html>

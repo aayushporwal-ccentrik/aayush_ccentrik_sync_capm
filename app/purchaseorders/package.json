@@ -1,0 +1,19 @@
+{
+  "name": "purchaseorders",
+  "version": "1.0.0",
+  "description": "PO Frontend",
+  "scripts": {
+    "start": "ui5 serve"
+  },
+
+  "cds": {
+  "requires": {
+    "db": {
+      "kind": "sqlite",
+      "credentials": {
+        "url": "db/my-database.db"
+      }
+    }
+  }
+}
+}

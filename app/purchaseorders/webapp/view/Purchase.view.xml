@@ -1,14 +1,16 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc"
+    controllerName="aayush.controller.Purchase"
     xmlns="sap.m"
     xmlns:t="sap.ui.table"
     xmlns:f="sap.ui.layout.form"
     xmlns:core="sap.ui.core"
-    controllerName="aayush.controller.Purchase">
-
+    xmlns:rowmodes="sap.ui.table.rowmodes"
+    displayBlock="true">
+<App>
     <Page title="Purchase Order Management System">
 
         <!-- OPERATION -->
-        <Panel headerText="Select Operation" visible="{/showOperationSelector}">
+        <Panel headerText="Select Operation" visible="{ui>/showOperationSelector}">
             <HBox justifyContent="Center">
                 <Button text="Create" press="onSelectCreate"/>
                 <Button text="Read" press="onSelectRead"/>
@@ -17,7 +19,7 @@
         </Panel>
 
         <!-- ================= CREATE ================= -->
-        <Panel headerText="Create Purchase Order" visible="{/showCreatePanel}">
+        <Panel headerText="Create Purchase Order" visible="{ui>/showCreatePanel}">
 
             <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
                 <f:content>
@@ -25,31 +27,31 @@
                     <core:Title text="PO Header"/>
 
                     <Label text="PO Number"/>
-                    <Input value="{/createPayload/EBELN}" type="Text"/>
+                    <Input value="{ui>/createPayload/EBELN}" type="Text"/>
 
                     <Label text="Company Code"/>
-                    <Input value="{/createPayload/BUKRS}"/>
+                    <Input value="{ui>/createPayload/BUKRS}"/>
 
                     <Label text="PO Type"/>
-                    <Input value="{/createPayload/BSART}"/>
+                    <Input value="{ui>/createPayload/BSART}"/>
 
-                    <!-- ✅ Vendor F4 -->
+                    <!--  Vendor F4 -->
                     <Label text="Vendor"/>
                     <HBox>
-                        <Input value="{/createPayload/LIFNR}" width="200px"/>
+                        <Input value="{ui>/createPayload/LIFNR}" width="200px"/>
                         <Button icon="sap-icon://value-help"
                             press="onVendorF4Help"/>
                     </HBox>
 
                     <Label text="Order Date"/>
-                    <DatePicker value="{/createPayload/AEDAT}"
+                    <DatePicker value="{ui>/createPayload/AEDAT}"
                         valueFormat="yyyy-MM-dd"/>
 
                     <Label text="Payment Terms"/>
-                    <Input value="{/createPayload/ZTERM}"/>
+                    <Input value="{ui>/createPayload/ZTERM}"/>
 
                     <Label text="Currency"/>
-                    <Input value="{/createPayload/currency}"/>
+                    <Input value="{ui>/createPayload/currency}"/>
 
                 </f:content>
             </f:SimpleForm>
@@ -57,16 +59,18 @@
             <!-- ================= ITEMS ================= -->
             <Panel headerText="PO Items">
 
-                <t:Table rows="{/createPayload/items}" visibleRowCount="3">
-
+                <t:Table rows="{ui>/createPayload/items}">
+                        <t:rowMode>
+                            <rowmodes:Fixed rowCount="3" />
+                        </t:rowMode>
                     <t:columns>
 
                         <t:Column>
                             <Label text="Material"/>
                             <t:template>
-                                <!-- ✅ Material F4 -->
+                                <!--Material F4 -->
                                 <HBox>
-                                    <Input value="{MATNR}" editable="false"/>
+                                    <Input value="{ui>MATNR}" editable="true"/>
                                     <Button icon="sap-icon://value-help"
                                         press="onMaterialF4Help"/>
                                 </HBox>
@@ -76,28 +80,28 @@
                         <t:Column>
                             <Label text="Quantity"/>
                             <t:template>
-                                <Input value="{MENGE}" type="Number"/>
+                                <Input value="{ui>MENGE}" type="Number"/>
                             </t:template>
                         </t:Column>
 
                         <t:Column>
                             <Label text="UOM"/>
                             <t:template>
-                                <Input value="{MEINS}"/>
+                                <Input value="{ui>MEINS}"/>
                             </t:template>
                         </t:Column>
 
                         <t:Column>
                             <Label text="Plant"/>
                             <t:template>
-                                <Input value="{WERKS}"/>
+                                <Input value="{ui>WERKS}"/>
                             </t:template>
                         </t:Column>
 
                         <t:Column>
                             <Label text="Price"/>
                             <t:template>
-                                <Input value="{NETPR}" type="Number"/>
+                                <Input value="{ui>NETPR}" type="Number"/>
                             </t:template>
                         </t:Column>
 
@@ -116,12 +120,15 @@
         </Panel>
 
         <!-- ================= READ ================= -->
-        <Panel headerText="View Purchase Orders" visible="{/showReadPanel}">
+        <Panel headerText="View Purchase Orders" visible="{ui>/showReadPanel}" height="100%">
 
             <Button text="Load Data" press="onLoadData"/>
 
             <!-- HEADER -->
-            <t:Table rows="{/POHeader}" visibleRowCount="5">
+            <t:Table rows="{ui>/POHeader}", height="400px">
+            <t:rowMode> 
+                <rowmodes:Auto minRowCount="3"/>
+            </t:rowMode>
 
                 <t:columns>
                     <t:Column><Label text="PO"/><t:template><Text text="{EBELN}"/></t:template></t:Column>
@@ -134,7 +141,10 @@
             </t:Table>
 
             <!-- ITEMS -->
-            <t:Table rows="{/POItems}" visibleRowCount="5">
+            <t:Table rows="{ui>/POItems}">
+                    <t:rowMode>
+                        <rowmodes:Auto minRowCount="5"/>
+                    </t:rowMode>
 
                 <t:columns>
                     <t:Column><Label text="Item"/><t:template><Text text="{EBELP}"/></t:template></t:Column>
@@ -150,30 +160,30 @@
         </Panel>
 
         <!-- ================= UPDATE ================= -->
-        <Panel headerText="Update Item" visible="{/showUpdatePanel}">
+        <Panel headerText="Update Item" visible="{ui>/showUpdatePanel}">
 
-            <Input value="{/searchItemId}" placeholder="Enter EBELP"/>
+            <Input value="{ui>/searchItemId}" placeholder="Enter EBELP"/>
             <Button text="Search" press="onSearchItem"/>
 
-            <Panel visible="{/editItemMode}">
+            <Panel visible="{ui>/editItemMode}">
 
                 <f:SimpleForm>
                     <f:content>
 
                         <Label text="Item"/>
-                        <Text text="{/editItemPayload/EBELP}"/>
+                        <Text text="{ui>/editItemPayload/EBELP}"/>
 
                         <Label text="PO"/>
-                        <Text text="{/editItemPayload/up_/EBELN}"/>
+                        <Text text="{ui>/editItemPayload/up_/EBELN}"/>
 
                         <Label text="Material"/>
-                        <Text text="{/editItemPayload/MATNR}"/>
+                        <Text text="{ui>/editItemPayload/MATNR}"/>
 
                         <Label text="Quantity"/>
-                        <Input value="{/editItemPayload/MENGE}"/>
+                        <Input value="{ui>/editItemPayload/MENGE}"/>
 
                         <Label text="UOM"/>
-                        <Text text="{/editItemPayload/MEINS}"/>
+                        <Text text="{ui>/editItemPayload/MEINS}"/>
 
                     </f:content>
                 </f:SimpleForm>
@@ -185,4 +195,5 @@
         </Panel>
 
     </Page>
+</App>
 </mvc:View>
