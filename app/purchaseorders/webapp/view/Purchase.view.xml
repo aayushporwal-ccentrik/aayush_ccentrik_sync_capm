@@ -13,9 +13,9 @@
         <!-- OPERATION -->
         <Panel headerText="Select Operation" visible="{ui>/showOperationSelector}">
             <HBox justifyContent="Center">
-                <Button text="Create" press="onSelectCreate"/>
+                <Button text="Create" class="myBigButton" press="onSelectCreate"/>
+                <ToolbarSpacer width="2rem"/>
                 <Button text="Read" press="onSelectRead"/>
-                <Button text="Update" press="onSelectUpdate"/>
             </HBox>
         </Panel>
 
@@ -27,8 +27,8 @@
 
                     <core:Title text="PO Header"/>
 
-                    <Label text="PO Number"/>
-                    <Input value="{ui>/createPayload/EBELN}" type="Text"/>
+                    <!-- <Label text="PO Number"/>
+                    <Input value="{ui>/createPayload/EBELN}" type="Text"/> -->
 
                     <Label text="Company Code"/>
                     <Input value="{ui>/createPayload/BUKRS}"/>
@@ -53,6 +53,9 @@
 
                     <Label text="Currency"/>
                     <Input value="{ui>/createPayload/currency}"/>
+
+                    <Label text="Status"/>
+                    <Input value="{ui>/createPayload/STATU}"/>
 
                 </f:content>
             </f:SimpleForm>
@@ -126,7 +129,7 @@
             <Button text="Load Data" press="onLoadData"/>
 
             <!-- HEADER -->
-            <t:Table rows="{ui>/POHeader}" visibleRowCount="3 ">
+            <t:Table rows="{ui>/POHeader}" rowSelectionChange="onPORowSelect" selectionMode="Single" visibleRowCount="3">
             <!-- <t:rowMode> 
                 <rowmodes:Fixed rowCount="3"/>
             </t:rowMode> -->
@@ -159,6 +162,45 @@
             </t:Table> -->
 
         </Panel>
+
+        <!-- ================= NEW: DETAIL PANEL ================= -->
+<Panel headerText="Purchase Order Detail" visible="{ui>/showDetailPanel}">
+
+    <f:SimpleForm editable="false" layout="ResponsiveGridLayout">
+        <f:content>
+            <core:Title text="PO Header"/>
+            <Label text="PO Number"/>    <Text text="{ui>/selectedPO/EBELN}"/>
+            <Label text="Company Code"/> <Text text="{ui>/selectedPO/BUKRS}"/>
+            <Label text="PO Type"/>      <Text text="{ui>/selectedPO/BSART}"/>
+            <Label text="Vendor"/>       <Text text="{ui>/selectedPO/LIFNR}"/>
+            <Label text="Order Date"/>   <Text text="{ui>/selectedPO/AEDAT}"/>
+            <Label text="Pay Terms"/>    <Text text="{ui>/selectedPO/ZTERM}"/>
+            <Label text="Currency"/>     <Text text="{ui>/selectedPO/currency}"/>
+            <Label text="Status"/>       <Text text="{ui>/selectedPO/STATU}"/>
+        </f:content>
+    </f:SimpleForm>
+
+    <Button text="Delete PO" type="Reject" press="onDeletePO"/>
+
+    <t:Table rows="{ui>/selectedPOItems}">
+        <t:rowMode><rowmodes:Fixed rowCount="5"/></t:rowMode>
+        <t:columns>
+            <t:Column><Label text="Item"/>    <t:template><Text  text="{ui>EBELP}"/></t:template></t:Column>
+            <t:Column><Label text="Material"/><t:template><Text  text="{ui>MATNR}"/></t:template></t:Column>
+            <t:Column><Label text="Quantity"/><t:template><Input value="{ui>MENGE}" type="Number"/></t:template></t:Column>
+            <t:Column><Label text="UOM"/>     <t:template><Text  text="{ui>MEINS}"/></t:template></t:Column>
+            <t:Column><Label text="Plant"/>   <t:template><Text  text="{ui>WERKS}"/></t:template></t:Column>
+            <t:Column><Label text="Price"/>   <t:template><Text  text="{ui>NETPR}"/></t:template></t:Column>
+            <t:Column><Label text="Action"/>  <t:template><Button text="Update" press="onUpdateItemInline"/></t:template></t:Column>
+        </t:columns>
+    </t:Table>
+
+    <Toolbar>
+        <Button text="Back" press="onBack"/>
+    </Toolbar>
+
+</Panel>
+<!-- ================= END DETAIL PANEL ================= -->
 
         <!-- ================= UPDATE ================= -->
         <Panel headerText="Update Item" visible="{ui>/showUpdatePanel}">

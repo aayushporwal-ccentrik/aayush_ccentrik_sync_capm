@@ -44,6 +44,9 @@ sap.ui.define([
             oModel.setProperty("/searchItemId", "");
             oModel.setProperty("/editItemMode", false);
             oModel.setProperty("/editItemPayload", {});
+            oModel.setProperty("/showDetailPanel", false);
+            oModel.setProperty("/selectedPO", {});
+            oModel.setProperty("/selectedPOItems", []);
 
             // Ensure F4 lists are initialized if not in Component.js
             if (!oModel.getProperty("/vendorList")) oModel.setProperty("/vendorList", []);
@@ -143,6 +146,7 @@ sap.ui.define([
             m.setProperty("/showCreatePanel",  mode === "create");
             m.setProperty("/showReadPanel",    mode === "read");
             m.setProperty("/showUpdatePanel",  mode === "update");
+            m.setProperty("/showDetailPanel", mode === "detail");
         },
 
         onBack: function () {
@@ -152,6 +156,10 @@ sap.ui.define([
             m.setProperty("/showReadPanel",    false);
             m.setProperty("/showUpdatePanel",  false);
             m.setProperty("/editItemMode",     false);
+            // CHANGE: reset detail panel
+            m.setProperty("/showDetailPanel", false);
+            m.setProperty("/selectedPO", {});
+            m.setProperty("/selectedPOItems", []);
             this._resetCreatePayload();
         },
 
@@ -159,10 +167,10 @@ sap.ui.define([
             const m = this._getUiModel();
             const payload = m.getProperty("/createPayload");
 
-            if (!payload.LIFNR || !payload.AEDAT) {
-                MessageBox.error("Vendor and Order Date are required.");
-                return;
-            }
+            // if (!payload.LIFNR || !payload.AEDAT) {
+            //     MessageBox.error("Vendor and Order Date are required.");
+            //     return;
+            // }
 
             payload.items = payload.items.filter(i => i.MATNR && i.MATNR.trim() !== "");
 
@@ -190,16 +198,6 @@ sap.ui.define([
             m.setProperty("/createPayload/items", items);
         },
 
-        // onLoadData: function () {
-        //     const m = this._getUiModel();
-        //     callOData("/PurchaseOrders", "GET", null)
-        //         .then(data => m.setProperty("/POHeader", data || []))
-        //         .catch(err => MessageBox.error("Failed to load POs: " + err.message));
-
-        //     callOData("/PurchaseOrderItems", "GET", null)
-        //         .then(data => m.setProperty("/POItems", data || []))
-        //         .catch(err => MessageBox.error("Failed to load PO Items: " + err.message));
-        // },
 
         onLoadData: function () {
     const m = this._getUiModel();
@@ -217,6 +215,57 @@ sap.ui.define([
             m.setProperty("/POItems", data || []);
         })
         .catch(err => MessageBox.error("Failed to load PO Items: " + err.message));
+},
+
+// NEW: row select handler — loads header + items into detail panel
+onPORowSelect: function (oEvent) {
+    const oRow = oEvent.getParameter("rowContext");
+    if (!oRow) return;
+
+    const m = this._getUiModel();
+    const oPO = oRow.getObject();         // full PO object from ui>/POHeader
+    console.log(">>> Selected PO:", JSON.stringify(oPO));
+    m.setProperty("/selectedPO", oPO);
+
+    // Auto-load items filtered by parent UUID
+    callOData("/PurchaseOrderItems?$filter=up__ID eq '" + oPO.ID + "'", "GET", null)
+        .then(data => {
+                console.log(">>> Items for PO:", JSON.stringify(data)); 
+                m.setProperty("/selectedPOItems", data || [])
+})
+        .catch(err => MessageBox.error("Failed to load items: " + err.message));
+
+    this._toggle("detail");
+},
+
+// NEW: inline quantity update — reads MENGE from the binding context of the pressed button
+onUpdateItemInline: function (oEvent) {
+    const oContext = oEvent.getSource().getBindingContext("ui");
+    const oItem = oContext.getObject();
+
+    callOData("/PurchaseOrderItems(" + oItem.ID + ")", "PATCH", { MENGE: Number(oItem.MENGE) })
+        .then(() => MessageBox.success("Item " + oItem.EBELP + " updated."))
+        .catch(err => MessageBox.error("Update failed: " + err.message));
+},
+
+// NEW: delete PO with confirmation dialog
+onDeletePO: function () {
+    const m = this._getUiModel();
+    const oPO = m.getProperty("/selectedPO");
+
+    MessageBox.confirm("Delete PO " + oPO.EBELN + "? This cannot be undone.", {
+        actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+        onClose: (sAction) => {
+            if (sAction !== MessageBox.Action.YES) return;
+            callOData("/PurchaseOrders(" + oPO.ID + ")", "DELETE", null)
+                .then(() => {
+                    MessageBox.success("PO " + oPO.EBELN + " deleted.");
+                    this.onBack();
+                    this.onLoadData();   // refresh the read list
+                })
+                .catch(err => MessageBox.error("Delete failed: " + err.message));
+        }
+    });
 },
 
         onSearchItem: function () {

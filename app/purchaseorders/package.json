@@ -6,14 +6,13 @@
     "start": "ui5 serve"
   },
 
-  "cds": {
-  "requires": {
-    "db": {
-      "kind": "sqlite",
-      "credentials": {
-        "url": "db/my-database.db"
-      }
+"cds": {
+    "requires": {
+        "db": {
+            "kind": "postgres"
+        }
     }
-  }
 }
+
+
 }

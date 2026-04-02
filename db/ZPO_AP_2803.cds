@@ -1,71 +1,91 @@
 namespace com.project.po;
 
+// managed: Adds createdAt, createdBy, modifiedAt, modifiedBy fields automatically
+// cuid: Adds a UUID-based primary key 'ID' automatically
 using { managed, cuid } from '@sap/cds/common' ;
 
-//Creation of PO_Header entity --> Parent entity
+/**
+ * Purchase Order Header (Parent Entity)
+ * This entity stores the high-level details of the order.
+ */
 entity PurchaseOrder: managed, cuid {
 
-    @title: 'poNumber'
-        EBELN : String(10) not null;
+    @title: 'PO Number'
+    EBELN : String(10) not null; // SAP standard field for Purchase Order Number
 
-            @title: 'companyCode'
-                BUKRS : String(4);
+    @title: 'Company Code'
+    BUKRS : String(4);
 
-                    @title: 'poType'
-                        BSART : String(4);
+    @title: 'PO Type'
+    BSART : String(4);
 
-                            @title: 'vendor'
-                                @mandatory
-                                    LIFNR : String(10);
+    @title: 'Vendor'
+    @mandatory // Enforces a value check during OData Create/Update
+    LIFNR : String(10);
 
-                                        @title: 'orderDate'
-                                            AEDAT : Date;
+    @title: 'Order Date'
+    AEDAT : Date;
 
-                                                @title: 'paymentTerms'
-                                                    ZTERM : String(4);
+    @title: 'Payment Terms'
+    ZTERM : String(4);
 
-                                                        @title: 'totalAmount'
-                                                            totalAmount : Decimal(13,2);
-                                                                
-                                                                    @title: 'currency'
-                                                                        currency : String(3);
+    @title: 'Total Amount'
+    totalAmount : Decimal(13,2);
+    
+    @title: 'Currency'
+    currency : String(3);
 
-                                                                            @title: 'status'
-                                                                                STATU : String(20) default 'DRAFT';
+    @title: 'Status'
+    STATU : String(20) default 'DRAFT';
 
-                                                                                    // Composition (Header → Items)
-                                                                                        items : Composition of many PurchaseOrderItem on items.up_ = $self;
-                                                                                        }
+    /** * COMPOSITION: Defines a parent-child lifecycle.
+     * If a PurchaseOrder is deleted, all associated items are deleted automatically.
+     * This also enables 'Deep Inserts' (saving Header and Items in one POST request).
+     */
+    items : Composition of many PurchaseOrderItem on items.up_ = $self;
+}
 
-                                                                                        //Creation of PO_Items entity --> Child entity
-                                                                                        entity PurchaseOrderItem : cuid, managed {
+/**
+ * Purchase Order Item (Child Entity)
+ * Stores the line items for each Purchase Order.
+ */
+entity PurchaseOrderItem : cuid, managed {
 
-                                                                                            up_ : Association to PurchaseOrder;
+    /**
+     * BACK-LINK: Connects the item back to its parent header.
+     * In the database, this creates a foreign key column 'up__ID'.
+     */
+    up_ : Association to PurchaseOrder;
 
-                                                                                                @title: 'lineItem'
-                                                                                                    EBELP : Integer;
+    @title: 'Line Item Number'
+    EBELP : Integer; // SAP standard field for Item Number (e.g., 10, 20, 30)
 
-                                                                                                        @title: 'material'
-                                                                                                            MATNR : String(40);
+    @title: 'Material Number'
+    MATNR : String(40);
 
-                                                                                                                @title: 'materialGroup'
-                                                                                                                    MATKL : String(9);
+    @title: 'Material Group'
+    MATKL : String(9);
 
-                                                                                                                        @title: 'plant'
-                                                                                                                            WERKS : String(4);
+    @title: 'Plant'
+    WERKS : String(4);
 
-                                                                                                                                @title: 'storageLocation'
-                                                                                                                                    LGORT : String(4);
+    @title: 'Storage Location'
+    LGORT : String(4);
 
-                                                                                                                                        @title: 'quantity'
-                                                                                                                                            MENGE : Decimal(13,3);
+    @title: 'Quantity'
+    MENGE : Decimal(13,3);
 
-                                                                                                                                                @title: 'uom'
-                                                                                                                                                    MEINS : String(3);
+    @title: 'Unit of Measure'
+    MEINS : String(3);
 
-                                                                                                                                                        @title: 'unitPrice'
-                                                                                                                                                            NETPR : Decimal(13,2);
+    @title: 'Net Price'
+    NETPR : Decimal(13,2);
 
-                                                                                                                                                                @title: 'priceUnit'
-                                                                                                                                                                    PEINH : Integer;
-                                                                                                                                                                    };
+    @title: 'Price Unit'
+    PEINH : Integer;
+}
+
+entity NumberRanges {
+    key type         : String(20);
+        currentValue : Integer default 0;
+}
