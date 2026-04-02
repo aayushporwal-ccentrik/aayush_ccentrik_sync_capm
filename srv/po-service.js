@@ -4,6 +4,8 @@ module.exports = cds.service.impl(async function () {
 
     const { PurchaseOrders } = this.entities
     const { NumberRanges } = cds.entities('com.project.po')
+
+    //Runs after user click save in UI and before it saves in db
     this.before('CREATE', PurchaseOrders, async (req) => {
         try {
             console.log(">>> CREATE handler entered");

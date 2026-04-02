@@ -33,8 +33,23 @@ const oData = {
     editItemPayload:       {},
 
     // ── F4 help lists ─────────────────────────────
-    vendorList:            [],
-    materialList:          [],
+   //  vendorList:            [],
+   //  materialList:          [],
+
+   vendorList: [
+    { LIFNR: "V001", NAME: "Bosch Ltd",            CITY: "Stuttgart" },
+    { LIFNR: "V002", NAME: "Tata Steel",            CITY: "Mumbai" },
+    { LIFNR: "V003", NAME: "Siemens AG",            CITY: "Munich" },
+    { LIFNR: "V004", NAME: "Mahindra Logistics",    CITY: "Pune" },
+    { LIFNR: "V005", NAME: "ABB India",             CITY: "Bengaluru" },
+],
+materialList: [
+    { MATNR: "MAT001", MAKTX: "Brake Disc",      MATKL: "ROH" },
+    { MATNR: "MAT002", MAKTX: "Fuel Injector",   MATKL: "ROH" },
+    { MATNR: "MAT003", MAKTX: "Spark Plug",      MATKL: "ROH" },
+    { MATNR: "MAT004", MAKTX: "Steel Sheet 2mm", MATKL: "ROH" },
+    { MATNR: "MAT005", MAKTX: "Bearing 6205",    MAKTL: "ROH" },
+],
 
     // ── Create payload ────────────────────────────
     createPayload: {

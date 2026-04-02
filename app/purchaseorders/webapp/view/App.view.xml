@@ -1,0 +1,21 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+    controllerName="aayush.controller.App"
+    xmlns="sap.m"
+    displayBlock="true">
+
+    <App id="mainApp">
+        <pages>
+            <Page title="PO Management System" showNavButton="true" navButtonPress="onNavBack">
+                <content>
+                    <VBox alignItems="Center" justifyContent="Center" height="100%">
+                        <Button
+                            text="Purchase Order"
+                            type="Emphasized"
+                            press="onOpenPurchaseOrder"/>
+                    </VBox>
+                </content>
+            </Page>
+        </pages>
+    </App>
+
+</mvc:View>

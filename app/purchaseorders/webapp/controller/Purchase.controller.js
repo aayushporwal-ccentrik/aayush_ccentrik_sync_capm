@@ -74,24 +74,27 @@ sap.ui.define([
                 .catch(() => console.warn("Material list could not be loaded"));
         },
 
-        onVendorF4Help: function () {
-            this._openF4Dialog("vendorList", "Select Vendor", "LIFNR", "name",
-                function (selected) {
-                    this._getUiModel().setProperty("/createPayload/LIFNR", selected.LIFNR);
-                }.bind(this)
-            );
-        },
+        // 
+        
+        //— match exact field names from Component.js
+onVendorF4Help: function () {
+    this._openF4Dialog("vendorList", "Select Vendor", "LIFNR", "NAME",
+        function (selected) {
+            this._getUiModel().setProperty("/createPayload/LIFNR", selected.LIFNR);
+        }.bind(this)
+    );
+},
 
-        onMaterialF4Help: function (oEvent) {
-            const oContext = oEvent.getSource().getBindingContext("ui");
-            this._openF4Dialog("materialList", "Select Material", "MATNR", "description",
-                function (selected) {
-                    const oObj = oContext.getObject();
-                    oObj.MATNR = selected.MATNR;
-                    this._getUiModel().refresh(true);
-                }.bind(this)
-            );
-        },
+onMaterialF4Help: function (oEvent) {
+    const oContext = oEvent.getSource().getBindingContext("ui");
+    this._openF4Dialog("materialList", "Select Material", "MATNR", "MAKTX",
+        function (selected) {
+            const oObj = oContext.getObject();
+            oObj.MATNR = selected.MATNR;
+            this._getUiModel().refresh(true);
+        }.bind(this)
+    );
+},
 
         _openF4Dialog: function (listPath, title, keyField, labelField, onSelect) {
             const oModel = this._getUiModel();
@@ -284,6 +287,8 @@ onDeletePO: function () {
                 })
                 .catch(() => MessageBox.error("Item not found."));
         },
+
+         
 
         onUpdateItem: function () {
             const m = this._getUiModel();

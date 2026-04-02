@@ -1,6 +1,7 @@
 //Importing Data Model
 using com.project.po as po from '../db/ZPO_AP_2803';
 
+//Sets base endpoint
 service POService @(path: '/po') {
 
     entity PurchaseOrders as projection on po.PurchaseOrder;

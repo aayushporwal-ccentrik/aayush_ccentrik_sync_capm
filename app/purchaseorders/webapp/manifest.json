@@ -28,7 +28,7 @@
   },
   "sap.ui5": {
         "rootView": {
-      "viewName": "aayush.view.Purchase",
+      "viewName": "aayush.view.App",
       "type": "XML",
       "id": "app"
     },

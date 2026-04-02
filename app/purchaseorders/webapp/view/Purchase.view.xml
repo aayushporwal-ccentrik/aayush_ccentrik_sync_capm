@@ -8,7 +8,9 @@
     displayBlock="true">
 <App>
     <pages>
-    <Page title="Purchase Order Management System">
+    <Page title="Purchase Order Management System"   
+      showNavButton="true" 
+      navButtonPress="onNavBack">
 
         <!-- OPERATION -->
         <Panel headerText="Select Operation" visible="{ui>/showOperationSelector}">
@@ -126,7 +128,7 @@
         <!-- ================= READ ================= -->
         <Panel headerText="View Purchase Orders" visible="{ui>/showReadPanel}" >
 
-            <Button text="Load Data" press="onLoadData"/>
+            <!-- <Button text="Load Data" press="onLoadData"/> -->
 
             <!-- HEADER -->
             <t:Table rows="{ui>/POHeader}" rowSelectionChange="onPORowSelect" selectionMode="Single" visibleRowCount="3">
@@ -135,7 +137,7 @@
             </t:rowMode> -->
 
                 <t:columns>
-                    <t:Column><Label text="PO"/><t:template><Text text="{ui>EBELN}"/></t:template></t:Column>
+                    <t:Column><Label text="PO Number"/><t:template><Text text="{ui>EBELN}"/></t:template></t:Column>
                     <t:Column><Label text="Date"/><t:template><Text text="{ui>AEDAT}"/></t:template></t:Column>
                     <t:Column><Label text="Vendor"/><t:template><Text text="{ui>LIFNR}"/></t:template></t:Column>
                     <t:Column><Label text="Company"/><t:template><Text text="{ui>BUKRS}"/></t:template></t:Column>
