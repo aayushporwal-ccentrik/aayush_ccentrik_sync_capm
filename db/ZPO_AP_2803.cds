@@ -63,6 +63,10 @@ entity PurchaseOrderItem : cuid, managed {
     @title: 'Material Number'
     MATNR : String(40);
 
+    @title: 'Material Description'
+    @cds.persistence.skip
+    MAKTX_display : String(100);
+    
     @title: 'Material Group'
     MATKL : String(9);
 
