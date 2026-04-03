@@ -7,49 +7,55 @@ sap.ui.define([
    return UIComponent.extend("aayush.Component", {
         metadata : {
          "interfaces": ["sap.ui.core.IAsyncContentCreation"],
-         /* CHANGE 1: Point to the Manifest. By adding this line, 
-            you don't need to define rootView here. It will read it from manifest.json */
          "manifest": "json"
       },
 
       init() {
-         // call the init function of the parent
          UIComponent.prototype.init.apply(this, arguments);
-         // set data model
+
 const oData = {
     // ── Navigation state ──────────────────────────
     showOperationSelector: true,
     showCreatePanel:       false,
     showReadPanel:         false,
     showUpdatePanel:       false,
+    showDeletePanel:       false,
+    showDetailPanel:       false,
     editItemMode:          false,
 
     // ── Read panel data ───────────────────────────
     POHeader:              [],
     POItems:               [],
 
-    // ── Update panel state ────────────────────────
-    searchItemId:          "",
+    // ── Detail panel state ────────────────────────
+    selectedPO:            {},
+    selectedPOItems:       [],
+
+    // ── Update panel — two search inputs ──────────
+    searchEBELN:           "",   // PO Number
+    searchEBELP:           "",   // Item Number
     editItemPayload:       {},
 
-    // ── F4 help lists ─────────────────────────────
-   //  vendorList:            [],
-   //  materialList:          [],
+    // ── Delete panel state ────────────────────────
+    deleteEBELN:           "",
+    showDeleteResult:      false,
+    deletePOResults:       [],
 
-   vendorList: [
-    { LIFNR: "V001", NAME: "Bosch Ltd",            CITY: "Stuttgart" },
-    { LIFNR: "V002", NAME: "Tata Steel",            CITY: "Mumbai" },
-    { LIFNR: "V003", NAME: "Siemens AG",            CITY: "Munich" },
-    { LIFNR: "V004", NAME: "Mahindra Logistics",    CITY: "Pune" },
-    { LIFNR: "V005", NAME: "ABB India",             CITY: "Bengaluru" },
-],
-materialList: [
-    { MATNR: "MAT001", MAKTX: "Brake Disc",      MATKL: "ROH" },
-    { MATNR: "MAT002", MAKTX: "Fuel Injector",   MATKL: "ROH" },
-    { MATNR: "MAT003", MAKTX: "Spark Plug",      MATKL: "ROH" },
-    { MATNR: "MAT004", MAKTX: "Steel Sheet 2mm", MATKL: "ROH" },
-    { MATNR: "MAT005", MAKTX: "Bearing 6205",    MAKTL: "ROH" },
-],
+    // ── F4 help lists ─────────────────────────────
+    vendorList: [
+        { LIFNR: "V001", NAME: "Bosch Ltd",         CITY: "Stuttgart" },
+        { LIFNR: "V002", NAME: "Tata Steel",         CITY: "Mumbai" },
+        { LIFNR: "V003", NAME: "Siemens AG",         CITY: "Munich" },
+        { LIFNR: "V004", NAME: "Mahindra Logistics", CITY: "Pune" },
+        { LIFNR: "V005", NAME: "ABB India",          CITY: "Bengaluru" },
+    ],
+    materialList: [
+        { MATNR: "MAT001", MAKTX: "Brake Disc",      MATKL: "ROH" },
+        { MATNR: "MAT002", MAKTX: "Fuel Injector",   MATKL: "ROH" },
+        { MATNR: "MAT003", MAKTX: "Spark Plug",      MATKL: "ROH" },
+        { MATNR: "MAT004", MAKTX: "Steel Sheet 2mm", MATKL: "ROH" },
+        { MATNR: "MAT005", MAKTX: "Bearing 6205",    MATKL: "ROH" },
+    ],
 
     // ── Create payload ────────────────────────────
     createPayload: {
@@ -61,18 +67,18 @@ materialList: [
         ZTERM:    "",
         currency: "",
         items: [{
-            EBELP: 10,
-            MATNR: "",
-            MENGE: null,
-            MEINS: "",
-            WERKS: "",
-            NETPR: null
+            EBELP:        10,
+            MATNR:        "",
+            MAKTX_display: "",   // display field — not sent to backend
+            MENGE:        null,
+            MEINS:        "",
+            WERKS:        "",
+            NETPR:        null
         }]
     }
 };
          const oModel = new JSONModel(oData);
          this.setModel(oModel, "ui");
-
-    }
+      }
    });
 });
